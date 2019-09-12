@@ -65,12 +65,25 @@ public class ContatoRepository implements DataBase<Contato> {
 
     @Override
     public void delete(Contato contato) {
-
+        try {
+            db.openConnection();
+            String sql = "DELETE FROM tb_contatos WHERE con_id = ?";
+            PreparedStatement ps = db.getConnection().prepareStatement(sql);
+            ps.setLong(1, contato.getId());
+            ps.executeUpdate();
+        } catch(SQLException error) {
+            System.out.println("ERRO: " + error);
+        } finally {
+            db.closeConnection();
+        }
     }
 
     @Override
     public void deleteById(Long id) {
-
+        Optional<Contato> contato = findById(id);
+        if (contato.isPresent()) {
+            delete(contato.get());
+        }
     }
 
 }
