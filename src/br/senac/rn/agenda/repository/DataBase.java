@@ -1,12 +1,13 @@
 package br.senac.rn.agenda.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface DataBase<T> {
 
     List<T> findAll();
 
-    T findById(Long id);
+    Optional<T> findById(Long id);
 
     void save(T t);
 

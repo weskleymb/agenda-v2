@@ -5,6 +5,7 @@ import br.senac.rn.agenda.model.Contato;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class ContatoRepository implements DataBase<Contato> {
 
@@ -34,8 +35,8 @@ public class ContatoRepository implements DataBase<Contato> {
     }
 
     @Override
-    public Contato findById(Long id) {
-        Contato contato = new Contato();
+    public Optional<Contato> findById(Long id) {
+        Optional<Contato> contato = Optional.of(new Contato());
         try {
             db.openConnection();
             String sql = "SELECT * FROM tb_contatos WHERE con_id = ?";
@@ -43,9 +44,11 @@ public class ContatoRepository implements DataBase<Contato> {
             ps.setLong(1, id);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                contato.setId(rs.getLong("con_id"));
-                contato.setNome(rs.getString("con_nome"));
-                contato.setFone(rs.getString("con_fone"));
+                contato.get().setId(rs.getLong("con_id"));
+                contato.get().setNome(rs.getString("con_nome"));
+                contato.get().setFone(rs.getString("con_fone"));
+            } else {
+                contato = Optional.empty();
             }
         } catch (SQLException error) {
             System.out.println("ERRO: " + error);
