@@ -7,7 +7,7 @@ public class AgendaApplication {
 
     public static void main(String[] args) {
         ContatoRepository repository = new ContatoRepository();
-        for (Contato contato : repository.buscaTodos()) {
+        for (Contato contato : repository.findAll()) {
             String id = contato.getId().toString();
             String nome = contato.getNome();
             String fone = contato.getFone();
