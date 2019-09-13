@@ -60,7 +60,11 @@ public class ContatoRepository implements DataBase<Contato> {
 
     @Override
     public void save(Contato contato) {
-
+        if (contato.getId() == null) {
+            insert(contato);
+        } else {
+            update(contato);
+        }
     }
 
     @Override
@@ -83,6 +87,37 @@ public class ContatoRepository implements DataBase<Contato> {
         Optional<Contato> contato = findById(id);
         if (contato.isPresent()) {
             delete(contato.get());
+        }
+    }
+
+    private void insert(Contato contato) {
+        try {
+            db.openConnection();
+            String sql = "INSERT INTO tb_contatos (con_nome, con_fone) VALUES (?, ?)";
+            PreparedStatement ps = db.getConnection().prepareStatement(sql);
+            ps.setString(1, contato.getNome());
+            ps.setString(2, contato.getFone());
+            ps.executeUpdate();
+        } catch(SQLException error) {
+            System.out.println("ERRO: " + error);
+        } finally {
+            db.closeConnection();
+        }
+    }
+
+    private void update(Contato contato) {
+        try {
+            db.openConnection();
+            String sql = "UPDATE tb_contatos SET con_nome = ?, con_fone = ? WHERE con_id = ?";
+            PreparedStatement ps = db.getConnection().prepareStatement(sql);
+            ps.setString(1, contato.getNome());
+            ps.setString(2, contato.getFone());
+            ps.setLong(3, contato.getId());
+            ps.executeUpdate();
+        } catch(SQLException error) {
+            System.out.println("ERRO: " + error);
+        } finally {
+            db.closeConnection();
         }
     }
 
